@@ -4,7 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <VersionPrefix>0.1.0</VersionPrefix>
     <Authors>artur.tagirov;ivan.filatov</Authors>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>Avalab.Serilog.Sanitizer</AssemblyName>
     <PackageId>Avalab.Serilog.Sanitizer</PackageId>
     <PackageTags>Avalab;Serilog;Sanitizer;Masked;Log</PackageTags>
