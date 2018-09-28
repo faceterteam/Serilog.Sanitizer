@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalab.Serilog.Sanitizer", "src\Avalab.Serilog.Sanitizer\Avalab.Serilog.Sanitizer.csproj", "{3A0CBC5D-9F8C-4D8A-B5FD-A25649D0DCCB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AE6AEBBF-86F6-4DC4-9D66-E9AC499500DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C541E4AE-1717-44DD-B8FB-648ADDB0D2BF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1574B068-4034-448B-8BFB-658467A0211F}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		.gitlab-ci.yml = .gitlab-ci.yml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalab.Serilog.Sanitizer.Tests", "tests\Avalab.Serilog.Sanitizer.Tests\Avalab.Serilog.Sanitizer.Tests.csproj", "{4A0E2E15-A6CA-4179-ABE8-96EE30AF3ED1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3A0CBC5D-9F8C-4D8A-B5FD-A25649D0DCCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A0CBC5D-9F8C-4D8A-B5FD-A25649D0DCCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A0CBC5D-9F8C-4D8A-B5FD-A25649D0DCCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A0CBC5D-9F8C-4D8A-B5FD-A25649D0DCCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A0E2E15-A6CA-4179-ABE8-96EE30AF3ED1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A0E2E15-A6CA-4179-ABE8-96EE30AF3ED1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A0E2E15-A6CA-4179-ABE8-96EE30AF3ED1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A0E2E15-A6CA-4179-ABE8-96EE30AF3ED1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3A0CBC5D-9F8C-4D8A-B5FD-A25649D0DCCB} = {AE6AEBBF-86F6-4DC4-9D66-E9AC499500DF}
+		{4A0E2E15-A6CA-4179-ABE8-96EE30AF3ED1} = {C541E4AE-1717-44DD-B8FB-648ADDB0D2BF}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C989FD91-1B2D-41FA-9B25-09BD14036535}
+	EndGlobalSection
+EndGlobal
