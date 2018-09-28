@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Avalab.Serilog.Sanitize
+namespace Avalab.Serilog.Sanitizer
 {
     public interface ISanitizingFormatRule
     {

@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Avalab.Serilog.Sanitize\Avalab.Serilog.Sanitize.csproj" />
+    <ProjectReference Include="..\..\src\Avalab.Serilog.Sanitizer\Avalab.Serilog.Sanitizer.csproj" />
   </ItemGroup>
 
 </Project>

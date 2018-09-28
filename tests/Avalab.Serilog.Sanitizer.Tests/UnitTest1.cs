@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace Avalab.Serilog.Sanitize.Tests
+namespace Avalab.Serilog.Sanitizer.Tests
 {
     public class UnitTest1
     {

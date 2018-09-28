@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Avalab.Serilog.Sanitize
+namespace Avalab.Serilog.Sanitizer
 {
     public interface ISanitizingProcessor
     {

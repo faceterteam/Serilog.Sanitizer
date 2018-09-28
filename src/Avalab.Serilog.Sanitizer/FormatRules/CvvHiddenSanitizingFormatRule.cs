@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace Avalab.Serilog.Sanitize.FormatRules
+namespace Avalab.Serilog.Sanitizer.FormatRules
 {
     public class CvvHiddenSanitizingFormatRule : ISanitizingFormatRule
     {

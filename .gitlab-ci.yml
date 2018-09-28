@@ -1,0 +1,13 @@
+stages:
+  - pack
+
+variables:
+  NUGET_ARTIFACTS_PATH: src/$CI_PROJECT_NAME/bin/Release
+
+job_pack_dotnet:
+  stage: pack    
+  tags: [docker]
+  image: microsoft/dotnet:2.0-sdk
+  script:
+    - dotnet pack -c release
+    - dotnet nuget push $NUGET_ARTIFACTS_PATH/*.nupkg -k $NUGET_TOKEN -s http://nuget.avalab.io/upload

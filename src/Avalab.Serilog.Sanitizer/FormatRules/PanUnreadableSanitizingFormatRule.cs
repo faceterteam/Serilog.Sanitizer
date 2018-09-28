@@ -1,15 +1,21 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Avalab.Serilog.Sanitize.FormatRules
+namespace Avalab.Serilog.Sanitizer.FormatRules
 {
     public class PanUnreadableSanitizingFormatRule : ISanitizingFormatRule
     {
         private readonly Regex _panUnreadableRegex;
+        private readonly string _replaceText;
 
-        public PanUnreadableSanitizingFormatRule(string regularExperession = @"[3456]\d{3}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}(?:[- ]?\d{2})?")
+        public PanUnreadableSanitizingFormatRule(string regularExperession, char replaceChar = '*')
         {
+            if (string.IsNullOrEmpty(regularExperession))
+                throw new ArgumentNullException(nameof(regularExperession));
+
             _panUnreadableRegex = new Regex(regularExperession);
+            _replaceText = replaceChar.ToString();
         }
 
         public string Sanitize(string content)
@@ -28,7 +34,7 @@ namespace Avalab.Serilog.Sanitize.FormatRules
                     i++;
                     if (i <= 6 || i > count - 4)
                         return match2.Value;
-                    return "*";
+                    return _replaceText;
                 });
             });
         }

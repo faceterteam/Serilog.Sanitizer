@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Avalab.Serilog.Sanitize
+namespace Avalab.Serilog.Sanitizer
 {
     public class LogSanitizingFormatter : ITextFormatter
     {

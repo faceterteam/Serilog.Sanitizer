@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalab.Serilog.Sanitize", "src\Avalab.Serilog.Sanitize\Avalab.Serilog.Sanitize.csproj", "{3A0CBC5D-9F8C-4D8A-B5FD-A25649D0DCCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalab.Serilog.Sanitizer", "src\Avalab.Serilog.Sanitizer\Avalab.Serilog.Sanitizer.csproj", "{3A0CBC5D-9F8C-4D8A-B5FD-A25649D0DCCB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AE6AEBBF-86F6-4DC4-9D66-E9AC499500DF}"
 EndProject
@@ -13,9 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		.gitlab-ci.yml = .gitlab-ci.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalab.Serilog.Sanitize.Tests", "tests\Avalab.Serilog.Sanitize.Tests\Avalab.Serilog.Sanitize.Tests.csproj", "{4A0E2E15-A6CA-4179-ABE8-96EE30AF3ED1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalab.Serilog.Sanitizer.Tests", "tests\Avalab.Serilog.Sanitizer.Tests\Avalab.Serilog.Sanitizer.Tests.csproj", "{4A0E2E15-A6CA-4179-ABE8-96EE30AF3ED1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
