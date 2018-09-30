@@ -36,7 +36,8 @@ namespace Avalab.Serilog.Sanitizer.Tests
             LogEvent evt = null;
             var logger = new LoggerConfiguration()
                                  .WriteTo.Sanitizer(
-                                    s => s.Delegate(c => evt = c))
+                                    s => s.Delegate(c => evt = c),
+                                     panFormat: "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?")
                             .CreateLogger();
 
             logger.Information($"Information with {pan} pan");
@@ -56,7 +57,8 @@ namespace Avalab.Serilog.Sanitizer.Tests
             LogEvent evt = null;
             var logger = new LoggerConfiguration()
                                  .WriteTo.Sanitizer(
-                                    s => s.Delegate(c => evt = c))
+                                    s => s.Delegate(c => evt = c), 
+                                    panFormat: "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?")
                             .CreateLogger();
 
             logger.Information($"Information with {number} number");
@@ -87,7 +89,8 @@ namespace Avalab.Serilog.Sanitizer.Tests
             LogEvent evt = null;
             var logger = new LoggerConfiguration()
                                 .WriteTo.Sanitizer(
-                                    s => s.Delegate(c => evt = c))
+                                    s => s.Delegate(c => evt = c), 
+                                    cvvFormat: "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?")
                             .CreateLogger();
 
             logger.Information($"Information with {cvv} cvv");

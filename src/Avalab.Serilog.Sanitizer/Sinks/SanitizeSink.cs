@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Serilog;
 using Serilog.Core;
@@ -31,11 +32,10 @@ namespace Avalab.Serilog.Sanitizer.Sinks
                 logEvent.Level,
                 logEvent.Exception,
                 messageTemplate,
-                // logEvent.MessageTemplate.Tokens),
-                new List<LogEventProperty>());
+                logEvent.Properties.Select(t => new LogEventProperty(t.Key, t.Value))
+                );
 
-            //foreach(var sink in _sinks)
-                _sink.Emit(nle);
+            _sink.Emit(nle);
         }
 
     }
