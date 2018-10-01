@@ -1,0 +1,50 @@
+stages:
+  - build
+  - test
+  - push
+
+before_script:
+  - export NUGET_PACKAGE_VERSION=$(echo $CI_COMMIT_REF_NAME | sed 's/v//g')
+
+job_build_dotnet:
+  stage: build
+  tags: [docker]
+  image: microsoft/dotnet:2.1-sdk
+  script:
+    - dotnet restore
+    - dotnet build -c release
+
+job_test_dotnet:
+  stage: test
+  tags: [docker]
+  image: microsoft/dotnet:2.1-sdk
+  script:
+    - ls *tests/*.Tests -d | xargs -L1 dotnet test --logger:trx -r test-results
+  dependencies:
+    - job_build_dotnet
+
+release_push_dotnet:
+  stage: push    
+  tags: [docker]
+  image: microsoft/dotnet:2.0-sdk
+  variables:
+    NUGET_ARTIFACTS_PATH: src/$CI_PROJECT_NAME/bin/Release
+  script:
+    - dotnet restore
+    - dotnet pack  -c release /p:PackageVersion=$NUGET_PACKAGE_VERSION
+    - dotnet nuget push $NUGET_ARTIFACTS_PATH/*.nupkg -k $NUGET_TOKEN -s http://nuget.avalab.io/upload
+  only:
+    - /^(v\d\.\d\.\d)$/
+
+prerelease_push_dotnet:
+  stage: push
+  tags: [docker]
+  image: microsoft/dotnet:2.0-sdk
+  variables:
+    NUGET_ARTIFACTS_PATH: src/$CI_PROJECT_NAME/bin/Debug
+  script:
+    - dotnet restore
+    - dotnet pack -c debug --include-symbols /p:PackageVersion=$NUGET_PACKAGE_VERSION
+    - dotnet nuget push $NUGET_ARTIFACTS_PATH/*.nupkg -k $NUGET_TOKEN -s http://nuget.avalab.io/upload
+  only:
+    - /^(v\d\.\d\.\d-[a-zA-Z]\S*)$/
