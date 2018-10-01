@@ -1,5 +1,6 @@
 ﻿using Serilog.Core;
 using Serilog.Events;
+using Serilog.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Text;

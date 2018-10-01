@@ -1,7 +1,10 @@
+using Avalab.Serilog.Sanitizer.FormatRules;
 using Avalab.Serilog.Sanitizer.Tests.Sinks;
 using Serilog;
+using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting;
+using Serilog.Formatting.Display;
 using System;
 using System.IO;
 using Xunit;
@@ -10,11 +13,11 @@ namespace Avalab.Serilog.Sanitizer.Tests
 {
     public class SanitizerTests
     {
-        private ITextFormatter _formatter; 
+        private readonly ITextFormatter _formatter;
 
         public SanitizerTests()
         {
-            _formatter = new PanCvvMaskedCompositeFormatter("{Message}");
+            _formatter = new MessageTemplateTextFormatter("{Message}", null);
         }
 
         [Theory]
@@ -31,9 +34,10 @@ namespace Avalab.Serilog.Sanitizer.Tests
         public void WhenRealPanThenDoesNotContainPan(string pan)
         {
             LogEvent evt = null;
-
             var logger = new LoggerConfiguration()
-                            .WriteTo.Sink(new DelegatingSink(e => evt = e))
+                                 .WriteTo.Sanitizer(
+                                    s => s.Delegate(c => evt = c),
+                                     panFormat: "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?")
                             .CreateLogger();
 
             logger.Information($"Information with {pan} pan");
@@ -51,9 +55,10 @@ namespace Avalab.Serilog.Sanitizer.Tests
         public void WhenNotPanThenContainsNumber(string number)
         {
             LogEvent evt = null;
-
             var logger = new LoggerConfiguration()
-                            .WriteTo.Sink(new DelegatingSink(e => evt = e))
+                                 .WriteTo.Sanitizer(
+                                    s => s.Delegate(c => evt = c), 
+                                    panFormat: "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?")
                             .CreateLogger();
 
             logger.Information($"Information with {number} number");
@@ -76,13 +81,16 @@ namespace Avalab.Serilog.Sanitizer.Tests
         [InlineData("{Cvv\":123}")]
         [InlineData("{Cvv\": 123}")]
         [InlineData("{CVV\":123}")]
-        [InlineData("{CVV\": 123}")]
+        [InlineData("{CVV: 123}")]
+        [InlineData("{cvv :123}")]
+        [InlineData("{cvv : 123}")]
         public void WhenFoundCvvThenDoesNotContainCvv(string cvv)
         {
             LogEvent evt = null;
-
             var logger = new LoggerConfiguration()
-                            .WriteTo.Sink(new DelegatingSink(e => evt = e))
+                                .WriteTo.Sanitizer(
+                                    s => s.Delegate(c => evt = c), 
+                                    cvvFormat: "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?")
                             .CreateLogger();
 
             logger.Information($"Information with {cvv} cvv");
