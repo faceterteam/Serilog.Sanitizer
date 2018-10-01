@@ -26,7 +26,7 @@ job_test_dotnet:
 release_push_dotnet:
   stage: push    
   tags: [docker]
-  image: microsoft/dotnet:2.0-sdk
+  image: microsoft/dotnet:2.1-sdk
   variables:
     NUGET_ARTIFACTS_PATH: src/$CI_PROJECT_NAME/bin/Release
   script:
@@ -39,7 +39,7 @@ release_push_dotnet:
 prerelease_push_dotnet:
   stage: push
   tags: [docker]
-  image: microsoft/dotnet:2.0-sdk
+  image: microsoft/dotnet:2.1-sdk
   variables:
     NUGET_ARTIFACTS_PATH: src/$CI_PROJECT_NAME/bin/Debug
   script:
