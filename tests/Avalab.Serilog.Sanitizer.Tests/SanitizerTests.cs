@@ -33,17 +33,13 @@ namespace Avalab.Serilog.Sanitizer.Tests
         [InlineData("5461458829025213")]
         public void WhenRealPanThenDoesNotContainPan(string pan)
         {
-            LogEvent evt = null;
+            TextWriter writer = new StringWriter();
             var logger = new LoggerConfiguration()
                                  .WriteTo.Sanitizer(
-                                    s => s.Delegate(c => evt = c),
-                                     panFormat: "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?")
+                                    s => s.Delegate(evt => _formatter.Format(evt, writer)))
                             .CreateLogger();
 
             logger.Information($"Information with {pan} pan");
-
-            TextWriter writer = new StringWriter();
-            _formatter.Format(evt, writer);
 
             Assert.DoesNotContain(pan, writer.ToString());
         }
@@ -54,17 +50,13 @@ namespace Avalab.Serilog.Sanitizer.Tests
         [InlineData("4123456789012345")]
         public void WhenNotPanThenContainsNumber(string number)
         {
-            LogEvent evt = null;
+            TextWriter writer = new StringWriter();
             var logger = new LoggerConfiguration()
                                  .WriteTo.Sanitizer(
-                                    s => s.Delegate(c => evt = c), 
-                                    panFormat: "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?")
+                                    s => s.Delegate(evt => _formatter.Format(evt, writer)))
                             .CreateLogger();
 
             logger.Information($"Information with {number} number");
-
-            TextWriter writer = new StringWriter();
-            _formatter.Format(evt, writer);
 
             Assert.Contains(number, writer.ToString());
         }
@@ -86,17 +78,13 @@ namespace Avalab.Serilog.Sanitizer.Tests
         [InlineData("{cvv : 123}")]
         public void WhenFoundCvvThenDoesNotContainCvv(string cvv)
         {
-            LogEvent evt = null;
+            TextWriter writer = new StringWriter();
             var logger = new LoggerConfiguration()
                                 .WriteTo.Sanitizer(
-                                    s => s.Delegate(c => evt = c), 
-                                    cvvFormat: "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?")
+                                    s => s.Delegate(evt => _formatter.Format(evt, writer)))
                             .CreateLogger();
 
             logger.Information($"Information with {cvv} cvv");
-
-            TextWriter writer = new StringWriter();
-            _formatter.Format(evt, writer);
 
             Assert.DoesNotContain("123", writer.ToString());
         }
