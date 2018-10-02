@@ -9,13 +9,13 @@ namespace Avalab.Serilog.Sanitizer.FormatRules
         private readonly Regex _panUnreadableRegex;
         private readonly string _replaceText;
 
-        public PanUnreadableSanitizingFormatRule(string regularExperession, char replaceChar = '*')
+        public PanUnreadableSanitizingFormatRule(string regularExperession, string replaceChar = "*")
         {
             if (string.IsNullOrEmpty(regularExperession))
                 throw new ArgumentNullException(nameof(regularExperession));
 
             _panUnreadableRegex = new Regex(regularExperession);
-            _replaceText = replaceChar.ToString();
+            _replaceText = replaceChar;
         }
 
         public string Sanitize(string content)

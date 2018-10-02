@@ -1,11 +1,8 @@
-using Avalab.Serilog.Sanitizer.FormatRules;
 using Avalab.Serilog.Sanitizer.Tests.Sinks;
+using Microsoft.Extensions.Configuration;
 using Serilog;
-using Serilog.Core;
-using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Formatting.Display;
-using System;
 using System.IO;
 using Xunit;
 
@@ -33,6 +30,12 @@ namespace Avalab.Serilog.Sanitizer.Tests
         [InlineData("5461458829025213")]
         public void WhenRealPanThenDoesNotContainPan(string pan)
         {
+            var configuration = new ConfigurationBuilder()
+                            .AddJsonFile("assets/WhenReadAllFormatersThenOk.json")
+                        .Build();
+
+            SanitizerConfigurationStore.FromOptions(configuration);
+
             TextWriter writer = new StringWriter();
             var logger = new LoggerConfiguration()
                                  .WriteTo.Sanitizer(
@@ -50,6 +53,12 @@ namespace Avalab.Serilog.Sanitizer.Tests
         [InlineData("4123456789012345")]
         public void WhenNotPanThenContainsNumber(string number)
         {
+            var configuration = new ConfigurationBuilder()
+                            .AddJsonFile("assets/WhenReadAllFormatersThenOk.json")
+                        .Build();
+
+            SanitizerConfigurationStore.FromOptions(configuration);
+
             TextWriter writer = new StringWriter();
             var logger = new LoggerConfiguration()
                                  .WriteTo.Sanitizer(
@@ -78,6 +87,12 @@ namespace Avalab.Serilog.Sanitizer.Tests
         [InlineData("{cvv : 123}")]
         public void WhenFoundCvvThenDoesNotContainCvv(string cvv)
         {
+            var configuration = new ConfigurationBuilder()
+                            .AddJsonFile("assets/WhenReadAllFormatersThenOk.json")
+                        .Build();
+
+            SanitizerConfigurationStore.FromOptions(configuration);
+
             TextWriter writer = new StringWriter();
             var logger = new LoggerConfiguration()
                                 .WriteTo.Sanitizer(

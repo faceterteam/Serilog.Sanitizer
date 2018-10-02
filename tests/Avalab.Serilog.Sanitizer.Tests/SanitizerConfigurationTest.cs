@@ -1,11 +1,7 @@
 ﻿using Avalab.Serilog.Sanitizer.Tests.Sinks;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using Serilog;
-using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Formatting.Display;
 
@@ -31,12 +27,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
                                         .AddJsonFile("assets/WhenReadAllFormatersThenOk.json")
                                     .Build();
 
-
-            var sanitizerSettings = new SanitizerSinkOptions();
-            configuration.GetSection("Serilog:WriteTo:0:Args:SanitizerSinkOptions").Bind(sanitizerSettings);
-
-            ConfigurationStore.SanitizerSinkOptions = sanitizerSettings;
-
+            SanitizerConfigurationStore.FromOptions(configuration);
 
             var writer = new StringWriter();
             var logger = new LoggerConfiguration()

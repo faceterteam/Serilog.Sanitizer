@@ -14,11 +14,11 @@
         "Args": {
           "SanitizerSinkOptions": {
             "formatters": 
-              {
-                "panFormat": "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?",
-                "cvvFormat": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
-                "myFormatter": "asdasdasdsada"
-              }
+            {
+              "PanUnreadableSanitizingFormatRule": [ "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", "*"],
+              "CvvHiddenSanitizingFormatRule": [ "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?", "*"],
+              "myFormatter": [ "asdasdasdsada" ]
+            }
           },
           "sinks": [
             {
