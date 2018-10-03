@@ -9,11 +9,11 @@ namespace Avalab.Serilog.Sanitizer.Tests.Sinks
     public static class DelegateLoggerConfigurationExtensions
     {
         public static LoggerConfiguration Delegate(
-           this LoggerSinkConfiguration loggerSinkConfiguration, Action<LogEvent> logEvent)
+           this LoggerSinkConfiguration loggerSinkConfiguration, Action<string> message)
         {
             if (loggerSinkConfiguration == null) throw new ArgumentNullException(nameof(loggerSinkConfiguration));
 
-            return loggerSinkConfiguration.Sink(new DelegatingSink(logEvent));
+            return loggerSinkConfiguration.Sink(new DelegatingSink(message));
         }
     }
 }

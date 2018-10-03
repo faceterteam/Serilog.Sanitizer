@@ -1,6 +1,7 @@
 {
   "Serilog": {
     "Using": [
+      "Serilog.Sinks.Trace",
       "Avalab.Serilog.Sanitizer"
     ],
     "MinimumLevel": "Debug",
@@ -14,42 +15,26 @@
         "Args": {
           "rules": [
             {
-              "Name": "PanUnreadableSanitizingFormatRule",
+              "Name": "PanUnreadable",
               "Args": {
                 "regularExpression": "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?",
-                "replaceChar": "*"
+                "replaceString": "*"
               }
             },
             {
-              "Name": "CvvHiddenSanitizingFormatRule",
+              "Name": "CvvHidden",
               "Args": {
 
                 "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
-                "replaceChar": "*"
-              }
-            },
-            {
-              "Name": "CvvHiddenSanitizingFormatRule",
-              "Args": {
-
-                "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{4}\"?",
-                "replaceChar": "*"
-              }
-            },
-            {
-              "Name": "myFormatter",
-              "Args": {
-
-                "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
-                "replaceChar": "*"
+                "replaceString": "*"
               }
             }
           ],
           "sinks": [
             {
-              "Name": "Debug",
+              "Name": "Trace",
               "Args": {
-                "outputTemplate": "{Message} 322 {NewLine}{Exception}"
+                "outputTemplate": "{Message}"
               }
             }
           ]

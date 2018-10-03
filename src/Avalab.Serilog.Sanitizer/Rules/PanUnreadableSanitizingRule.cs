@@ -2,39 +2,45 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Avalab.Serilog.Sanitizer.FormatRules
+namespace Avalab.Serilog.Sanitizer.Rules
 {
-    public class PanUnreadableSanitizingFormatRule : ISanitizingFormatRule
+    sealed class PanUnreadableSanitizingRule : AbstractSanitizingRule
     {
         private readonly Regex _panUnreadableRegex;
-        private readonly string _replaceText;
+        private readonly string _replaceString;
+        private readonly uint _startReplaceIndex;
+        private readonly uint _endReplaceIndex;
 
-        public PanUnreadableSanitizingFormatRule(string regularExpression = "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", string replaceChar = "*")
+        public PanUnreadableSanitizingRule(
+            string regularExpression, 
+            string replaceString,
+            uint startReplaceIndex,
+            uint endReplaceIndex)
         {
             if (string.IsNullOrEmpty(regularExpression))
                 throw new ArgumentNullException(nameof(regularExpression));
 
             _panUnreadableRegex = new Regex(regularExpression);
-            _replaceText = replaceChar;
+            _replaceString = replaceString;
+            _startReplaceIndex = startReplaceIndex;
+            _endReplaceIndex = endReplaceIndex;
         }
 
-        public string Sanitize(string content)
+        public override string Sanitize(string content)
         {
             return _panUnreadableRegex.Replace(content, match =>
             {
-                string v = match.Value;
-
                 int count;
-                if (!Mod10Check(v, out count))
-                    return v;
+                if (!Mod10Check(match.Value, out count))
+                    return match.Value;
 
                 int i = 0;
-                return Regex.Replace(v, @"\d", match2 =>
+                return Regex.Replace(match.Value, @"\d", match2 =>
                 {
                     i++;
-                    if (i <= 6 || i > count - 4)
+                    if (i <= _startReplaceIndex || i > count - _endReplaceIndex)
                         return match2.Value;
-                    return _replaceText;
+                    return _replaceString;
                 });
             });
         }

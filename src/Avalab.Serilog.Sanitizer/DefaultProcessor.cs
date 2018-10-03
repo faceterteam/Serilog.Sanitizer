@@ -3,11 +3,18 @@ using System.Collections.Generic;
 
 namespace Avalab.Serilog.Sanitizer
 {
-    public class DefaultProcessor : ISanitizingProcessor
+    class DefaultProcessor : ISanitizingProcessor
     {
-        public string Process(string content, IEnumerable<ISanitizingFormatRule> rules)
+        private readonly IEnumerable<AbstractSanitizingRule> _rules;
+
+        public DefaultProcessor(IEnumerable<AbstractSanitizingRule> rules)
         {
-            return rules.Aggregate(content, (ct, rule) => rule.Sanitize(ct));
+            _rules = rules;
+        }
+
+        public string Process(string content)
+        {
+            return _rules.Aggregate(content, (ct, rule) => rule.Sanitize(ct));
         }
     }
 }
