@@ -4,6 +4,6 @@ namespace Avalab.Serilog.Sanitizer
 {
     public class SanitizerSinkOptions
     {
-        public IReadOnlyDictionary<string, string[]> Formatters { get; set; }
+        public IReadOnlyCollection<FormatterMetaInfo> Formatters { get; set; }
     }
 }

@@ -30,16 +30,18 @@ namespace Avalab.Serilog.Sanitizer.Tests
             SanitizerConfigurationStore.FromOptions(configuration);
 
             var writer = new StringWriter();
-            var logger = new LoggerConfiguration()
+            var config = new LoggerConfiguration()
                                 .ReadFrom.Configuration(configuration)
                                 .WriteTo.Sanitizer(
                                     s => s.Delegate(
-                                        lgEvent => _formatter.Format(lgEvent, writer)))
-                             .CreateLogger();
+                                        lgEvent => _formatter.Format(lgEvent, writer)));
+
+            var logger = config.CreateLogger();
 
             logger.Information($"Information with {pan} pan");
 
-            Assert.DoesNotContain(pan, writer.ToString());
+            Assert.DoesNotContain("123", writer.ToString());
+            Assert.DoesNotContain("5677", writer.ToString());
         }
     }
 }

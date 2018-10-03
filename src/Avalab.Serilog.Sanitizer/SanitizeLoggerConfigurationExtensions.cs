@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Avalab.Serilog.Sanitizer
 {
@@ -33,10 +34,12 @@ namespace Avalab.Serilog.Sanitizer
     {
         public static SanitizerSinkOptions SanitizerSinkOptions { get; private set; }
         private static readonly IReadOnlyCollection<Type> _rules;
+        private static readonly ConcurrentDictionary<(Type, IReadOnlyCollection<string>), ISanitizingFormatRule> _cachedRules;
 
         static SanitizerConfigurationStore()
         {
             var interfaceType = typeof(ISanitizingFormatRule);
+            _cachedRules = new ConcurrentDictionary<(Type, IReadOnlyCollection<string>), ISanitizingFormatRule>();
             var rules = AppDomain
                     .CurrentDomain.GetAssemblies()
                     .SelectMany(assembly => assembly.GetTypesWithInterface(interfaceType));
@@ -45,16 +48,22 @@ namespace Avalab.Serilog.Sanitizer
 
         public static IReadOnlyCollection<ISanitizingFormatRule> GetFormatters()
         {
-            return SanitizerSinkOptions.Formatters.Select(setting => GetFormatter(setting.Key)).Where(entry => entry != null).ToList();
+            return SanitizerSinkOptions
+                    .Formatters
+                    .Select(setting => GetFormatter(setting.Name, setting.Args.ToArray()))
+                    .Where(entry => entry != null)
+                .ToList();
         }
 
-        private static ISanitizingFormatRule GetFormatter(string formatterId)
+        private static ISanitizingFormatRule GetFormatter(string formatterId, string[] argsForCtor)
         {
-            var rule = _rules.FirstOrDefault(type => type.Name.Equals(formatterId));
-            if (rule == null) return null;
-            var config = SanitizerSinkOptions.Formatters[formatterId];
+            var ruleType = _rules.FirstOrDefault(type => type.Name.Equals(formatterId));
+            if (ruleType == null) return null;
 
-            return (ISanitizingFormatRule)Activator.CreateInstance(rule, config);
+            if (_cachedRules.TryGetValue((ruleType, argsForCtor), out var returnInstance))
+                return returnInstance;
+
+            return _cachedRules.GetOrAdd((ruleType, argsForCtor), (ISanitizingFormatRule)Activator.CreateInstance(ruleType, argsForCtor));
         }
 
         public static void FromOptions(IConfiguration configuration) => SanitizerSinkOptions = configuration.GetSection("Serilog:WriteTo:0:Args:SanitizerSinkOptions").Get<SanitizerSinkOptions>();
@@ -81,10 +90,12 @@ namespace Avalab.Serilog.Sanitizer
             }
         }
 
-        internal static IEnumerable<Type> GetTypesWithInterface(this Assembly asm, Type interfaceType) => asm
-            .GetLoadableTypes()
-            .Where(interfaceType.IsAssignableFrom)
-            .Where(type => type.IsClass)
-        .ToList();
+        internal static IEnumerable<Type> GetTypesWithInterface(this Assembly asm, Type interfaceType)
+        {
+            return asm
+                .GetLoadableTypes()
+                .Where(type => interfaceType.IsAssignableFrom(type) && type.IsClass)
+            .ToList();
+        }
     }
 }

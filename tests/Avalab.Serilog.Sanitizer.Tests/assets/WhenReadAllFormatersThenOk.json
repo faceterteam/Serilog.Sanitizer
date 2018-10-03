@@ -13,12 +13,20 @@
         "Name": "Sanitizer",
         "Args": {
           "SanitizerSinkOptions": {
-            "formatters": 
-            {
-              "PanUnreadableSanitizingFormatRule": [ "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", "*"],
-              "CvvHiddenSanitizingFormatRule": [ "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?", "*"],
-              "myFormatter": [ "asdasdasdsada" ]
-            }
+            "Formatters": [
+              {
+                "Name": "PanUnreadableSanitizingFormatRule",
+                "Args": [ "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", "*" ]
+              },
+              {
+                "Name": "CvvHiddenSanitizingFormatRule",
+                "Args": [ "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?", "*" ]
+              },
+              {
+                "Name": "myFormatter",
+                "Args": [ "asdsd"]
+              }
+            ]
           },
           "sinks": [
             {
