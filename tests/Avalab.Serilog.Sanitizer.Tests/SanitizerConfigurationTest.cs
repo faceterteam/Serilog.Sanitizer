@@ -27,9 +27,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
         [Fact]
         public void WhenReadConfigurationFromClassCorrectlyThenOk()
         {
-            SanitizerConfigurationStore.FromOptions(new SanitizerSinkOptions
-            {
-                Formatters = new List<FormatterMetaInfo>()
+            SanitizerConfigurationStore.FromOptions(new List<FormatterMetaInfo>()
                 {
                     new FormatterMetaInfo()
                     {
@@ -40,12 +38,10 @@ namespace Avalab.Serilog.Sanitizer.Tests
                             { "replaceChar", "*" }
                         }
                     }
-                }
             });
 
             var formatters = SanitizerConfigurationStore
-                .SanitizerSinkOptions
-                .Formatters;
+                .Rules;
 
             Assert.Equal(1, formatters.Count);
             Assert.Contains(formatters,
@@ -66,8 +62,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
             SanitizerConfigurationStore.FromOptions(configuration);
 
             var formatters = SanitizerConfigurationStore
-                .SanitizerSinkOptions
-                .Formatters;
+                .Rules;
 
             Assert.Equal(3, formatters.Count);
             Assert.Contains(formatters, 

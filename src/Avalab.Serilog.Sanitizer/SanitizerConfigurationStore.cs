@@ -15,7 +15,7 @@ namespace Avalab.Serilog.Sanitizer
 {
     internal static class SanitizerConfigurationStore
     {
-        public static SanitizerSinkOptions SanitizerSinkOptions { get; private set; }
+        public static IReadOnlyCollection<FormatterMetaInfo> Rules { get; private set; }
         private static IChangeToken _changeToken;
 
         private static readonly IReadOnlyCollection<Type> _rules;
@@ -33,8 +33,7 @@ namespace Avalab.Serilog.Sanitizer
 
         public static IReadOnlyCollection<ISanitizingFormatRule> GetFormatters()
         {
-            return SanitizerSinkOptions
-                    .Formatters
+            return Rules
                     .Select(setting => GetFormatter(setting.Name, setting.Args))
                     .Where(entry => entry != null)
                 .ToList();
@@ -96,7 +95,7 @@ namespace Avalab.Serilog.Sanitizer
                     .GetSection(sanitizerSectionPath)
                     .GetChildren()
                     .First(children => children.Key == "Args")
-                .GetSection("SanitizerSinkOptions");
+                .GetSection("rules");
 
             if (!sanitizerOptionSection.Exists())
                 throw new ArgumentNullException(nameof(sanitizerOptionSection));
@@ -104,12 +103,12 @@ namespace Avalab.Serilog.Sanitizer
             _changeToken = sanitizerOptionSection.GetReloadToken();
 
             _changeToken.RegisterChangeCallback(
-                obj => SanitizerSinkOptions = configuration.GetSection(sanitizerOptionSection.Path).Get<SanitizerSinkOptions>(),
+                obj => Rules = configuration.GetSection(sanitizerOptionSection.Path).Get<List<FormatterMetaInfo>>(),
             null);
 
-            SanitizerSinkOptions = configuration.GetSection(sanitizerOptionSection.Path).Get<SanitizerSinkOptions>();
+            Rules = configuration.GetSection(sanitizerOptionSection.Path).Get<List<FormatterMetaInfo>>();
         }
 
-        public static void FromOptions(SanitizerSinkOptions configuration) => SanitizerSinkOptions = configuration;
+        public static void FromOptions(IReadOnlyCollection<FormatterMetaInfo> configuration) => Rules = configuration;
     }
 }

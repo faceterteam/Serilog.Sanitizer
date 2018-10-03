@@ -12,40 +12,38 @@
       {
         "Name": "Sanitizer",
         "Args": {
-          "SanitizerSinkOptions": {
-            "Formatters": [
-              {
-                "Name": "PanUnreadableSanitizingFormatRule",
-                "Args": {
-                  "replaceChar": "*"
-                }
-              },
-              {
-                "Name": "CvvHiddenSanitizingFormatRule",
-                "Args": {
-
-                  "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
-                  "replaceChar": "*"
-                }
-              },
-              {
-                "Name": "CvvHiddenSanitizingFormatRule",
-                "Args": {
-
-                  "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{4}\"?",
-                  "replaceChar": "*"
-                }
-              },
-              {
-                "Name": "myFormatter",
-                "Args": {
-
-                  "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
-                  "replaceChar": "*"
-                }
+          "rules": [
+            {
+              "Name": "PanUnreadableSanitizingFormatRule",
+              "Args": {
+                "replaceChar": "*"
               }
-            ]
-          },
+            },
+            {
+              "Name": "CvvHiddenSanitizingFormatRule",
+              "Args": {
+
+                "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
+                "replaceChar": "*"
+              }
+            },
+            {
+              "Name": "CvvHiddenSanitizingFormatRule",
+              "Args": {
+
+                "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{4}\"?",
+                "replaceChar": "*"
+              }
+            },
+            {
+              "Name": "myFormatter",
+              "Args": {
+
+                "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
+                "replaceChar": "*"
+              }
+            }
+          ],
           "sinks": [
             {
               "Name": "Debug",

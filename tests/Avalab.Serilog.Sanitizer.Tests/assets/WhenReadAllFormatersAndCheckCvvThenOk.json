@@ -12,41 +12,39 @@
       {
         "Name": "Sanitizer",
         "Args": {
-          "SanitizerSinkOptions": {
-            "Formatters": [
-              {
-                "Name": "PanUnreadableSanitizingFormatRule",
-                "Args": {
-                  "regularExpression": "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?",
-                  "replaceChar": "*"
-                }
-              },
-              {
-                "Name": "CvvHiddenSanitizingFormatRule",
-                "Args": {
-
-                  "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
-                  "replaceChar": "*"
-                }
-              },
-              {
-                "Name": "CvvHiddenSanitizingFormatRule",
-                "Args": {
-
-                  "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{4}\"?",
-                  "replaceChar": "*"
-                }
-              },
-              {
-                "Name": "myFormatter",
-                "Args": {
-
-                  "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
-                  "replaceChar": "*"
-                }
+          "rules": [
+            {
+              "Name": "PanUnreadableSanitizingFormatRule",
+              "Args": {
+                "regularExpression": "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?",
+                "replaceChar": "*"
               }
-            ]
-          },
+            },
+            {
+              "Name": "CvvHiddenSanitizingFormatRule",
+              "Args": {
+
+                "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
+                "replaceChar": "*"
+              }
+            },
+            {
+              "Name": "CvvHiddenSanitizingFormatRule",
+              "Args": {
+
+                "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{4}\"?",
+                "replaceChar": "*"
+              }
+            },
+            {
+              "Name": "myFormatter",
+              "Args": {
+
+                "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
+                "replaceChar": "*"
+              }
+            }
+          ],
           "sinks": [
             {
               "Name": "Debug",
