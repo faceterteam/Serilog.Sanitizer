@@ -9,12 +9,12 @@ namespace Avalab.Serilog.Sanitizer.FormatRules
         private readonly Regex _panUnreadableRegex;
         private readonly string _replaceText;
 
-        public PanUnreadableSanitizingFormatRule(string regularExperession, string replaceChar = "*")
+        public PanUnreadableSanitizingFormatRule(string regularExpression = "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", string replaceChar = "*")
         {
-            if (string.IsNullOrEmpty(regularExperession))
-                throw new ArgumentNullException(nameof(regularExperession));
+            if (string.IsNullOrEmpty(regularExpression))
+                throw new ArgumentNullException(nameof(regularExpression));
 
-            _panUnreadableRegex = new Regex(regularExperession);
+            _panUnreadableRegex = new Regex(regularExpression);
             _replaceText = replaceChar;
         }
 

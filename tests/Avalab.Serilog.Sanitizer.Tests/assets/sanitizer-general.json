@@ -16,19 +16,34 @@
             "Formatters": [
               {
                 "Name": "PanUnreadableSanitizingFormatRule",
-                "Args": [ "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", "*" ]
+                "Args": {
+                  "regularExpression": "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?",
+                  "replaceChar": "*"
+                }
               },
               {
                 "Name": "CvvHiddenSanitizingFormatRule",
-                "Args": [ "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?", "*" ]
+                "Args": {
+
+                  "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
+                  "replaceChar": "*"
+                }
               },
               {
                 "Name": "CvvHiddenSanitizingFormatRule",
-                "Args": [ "(?i)cvv\"?[ ]?:[ ]?\"?\\d{4}\"?", "*" ]
+                "Args": {
+
+                  "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{4}\"?",
+                  "replaceChar": "*"
+                }
               },
               {
                 "Name": "myFormatter",
-                "Args": [ "asdsd" ]
+                "Args": {
+
+                  "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
+                  "replaceChar": "*"
+                }
               }
             ]
           },

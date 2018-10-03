@@ -27,10 +27,6 @@ namespace Avalab.Serilog.Sanitizer.Tests
         [Fact]
         public void WhenReadConfigurationFromClassCorrectlyThenOk()
         {
-            var configuration = new ConfigurationBuilder()
-                                        .AddJsonFile("assets/WhenReadConfigurationFromJsonCorrectlyThenOk.json")
-                                    .Build();
-
             SanitizerConfigurationStore.FromOptions(new SanitizerSinkOptions
             {
                 Formatters = new List<FormatterMetaInfo>()
@@ -38,9 +34,10 @@ namespace Avalab.Serilog.Sanitizer.Tests
                     new FormatterMetaInfo()
                     {
                         Name = "PanUnreadableSanitizingFormatRule",
-                        Args = new string[] 
+                        Args = new Dictionary<string,string>
                         {
-                        "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", "*"
+                            { "regularExpression", "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?" },
+                            { "replaceChar", "*" }
                         }
                     }
                 }
@@ -53,7 +50,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
             Assert.Equal(1, formatters.Count);
             Assert.Contains(formatters,
                 formatter => formatter.Name == "PanUnreadableSanitizingFormatRule" &&
-                formatter.Args.Except(new string[] 
+                formatter.Args.Values.Except(new string[] 
                 {
                     "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", "*"
                 }).Count() == 0);
@@ -75,19 +72,19 @@ namespace Avalab.Serilog.Sanitizer.Tests
             Assert.Equal(3, formatters.Count);
             Assert.Contains(formatters, 
                 formatter => formatter.Name == "PanUnreadableSanitizingFormatRule" &&
-                formatter.Args.Except(new string[] {
+                formatter.Args.Values.Except(new string[] {
                     "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", "*" 
                 }).Count() == 0);
 
             Assert.Contains(formatters, 
                 formatter => formatter.Name == "CvvHiddenSanitizingFormatRule" &&
-                formatter.Args.Except(new string[] {
+                formatter.Args.Values.Except(new string[] {
                     "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?", "*"
             }).Count() == 0);
 
             Assert.Contains(formatters,
                 formatter => formatter.Name == "CvvHiddenSanitizingFormatRule" &&
-                formatter.Args.Except(new string[] {
+                formatter.Args.Values.Except(new string[] {
                     "(?i)cvv\"?[ ]?:[ ]?\"?\\d{4}\"?", "*"
             }).Count() == 0);
         }

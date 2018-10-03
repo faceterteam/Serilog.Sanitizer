@@ -8,12 +8,12 @@ namespace Avalab.Serilog.Sanitizer.FormatRules
         private readonly Regex _regex;
         private readonly string _replaceText;
 
-        public CvvHiddenSanitizingFormatRule(string regularExperession, string replaceChar = "*")
+        public CvvHiddenSanitizingFormatRule(string regularExpression, string replaceChar = "*")
         {
-            if (string.IsNullOrEmpty(regularExperession))
-                throw new ArgumentNullException(nameof(regularExperession));
+            if (string.IsNullOrEmpty(regularExpression))
+                throw new ArgumentNullException(nameof(regularExpression));
 
-            _regex = new Regex(regularExperession);
+            _regex = new Regex(regularExpression);
             _replaceText = replaceChar;
         }
 
