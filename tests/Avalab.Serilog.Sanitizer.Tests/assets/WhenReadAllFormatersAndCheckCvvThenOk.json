@@ -23,8 +23,12 @@
                 "Args": [ "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?", "*" ]
               },
               {
+                "Name": "CvvHiddenSanitizingFormatRule",
+                "Args": [ "(?i)cvv\"?[ ]?:[ ]?\"?\\d{4}\"?", "*" ]
+              },
+              {
                 "Name": "myFormatter",
-                "Args": [ "asdsd"]
+                "Args": [ "asdsd" ]
               }
             ]
           },

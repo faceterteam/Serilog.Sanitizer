@@ -1,11 +1,16 @@
 ﻿using Avalab.Serilog.Sanitizer.Tests.Sinks;
+using Avalab.Serilog.Sanitizer.Extensions;
 
 using Microsoft.Extensions.Configuration;
+
 using Serilog;
 using Serilog.Formatting;
 using Serilog.Formatting.Display;
 
 using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+
 using Xunit;
 
 namespace Avalab.Serilog.Sanitizer.Tests
@@ -19,12 +24,80 @@ namespace Avalab.Serilog.Sanitizer.Tests
             _formatter = new MessageTemplateTextFormatter("{Message}", null);
         }
 
-        [Theory]
-        [InlineData("4024007111744339")]
-        public void WhenReadAllFormatersThenOk(string pan)
+        [Fact]
+        public void WhenReadConfigurationFromClassCorrectlyThenOk()
         {
             var configuration = new ConfigurationBuilder()
-                                        .AddJsonFile("assets/WhenReadAllFormatersThenOk.json")
+                                        .AddJsonFile("assets/WhenReadConfigurationFromJsonCorrectlyThenOk.json")
+                                    .Build();
+
+            SanitizerConfigurationStore.FromOptions(new SanitizerSinkOptions
+            {
+                Formatters = new List<FormatterMetaInfo>()
+                {
+                    new FormatterMetaInfo()
+                    {
+                        Name = "PanUnreadableSanitizingFormatRule",
+                        Args = new string[] 
+                        {
+                        "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", "*"
+                        }
+                    }
+                }
+            });
+
+            var formatters = SanitizerConfigurationStore
+                .SanitizerSinkOptions
+                .Formatters;
+
+            Assert.Equal(1, formatters.Count);
+            Assert.Contains(formatters,
+                formatter => formatter.Name == "PanUnreadableSanitizingFormatRule" &&
+                formatter.Args.Except(new string[] 
+                {
+                    "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", "*"
+                }).Count() == 0);
+        }
+
+        [Fact]
+        public void WhenReadConfigurationFromJsonCorrectlyThenOk()
+        {
+            var configuration = new ConfigurationBuilder()
+                                        .AddJsonFile("assets/WhenReadConfigurationFromJsonCorrectlyThenOk.json")
+                                    .Build();
+
+            SanitizerConfigurationStore.FromOptions(configuration);
+
+            var formatters = SanitizerConfigurationStore
+                .SanitizerSinkOptions
+                .Formatters;
+
+            Assert.Equal(3, formatters.Count);
+            Assert.Contains(formatters, 
+                formatter => formatter.Name == "PanUnreadableSanitizingFormatRule" &&
+                formatter.Args.Except(new string[] {
+                    "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", "*" 
+                }).Count() == 0);
+
+            Assert.Contains(formatters, 
+                formatter => formatter.Name == "CvvHiddenSanitizingFormatRule" &&
+                formatter.Args.Except(new string[] {
+                    "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?", "*"
+            }).Count() == 0);
+
+            Assert.Contains(formatters,
+                formatter => formatter.Name == "CvvHiddenSanitizingFormatRule" &&
+                formatter.Args.Except(new string[] {
+                    "(?i)cvv\"?[ ]?:[ ]?\"?\\d{4}\"?", "*"
+            }).Count() == 0);
+        }
+
+        [Theory]
+        [InlineData("4024007111744339")]
+        public void WhenReadAllFormatersAndCheckPanThenOk(string pan)
+        {
+            var configuration = new ConfigurationBuilder()
+                                        .AddJsonFile("assets/WhenReadAllFormatersAndCheckPanThenOk.json")
                                     .Build();
 
             SanitizerConfigurationStore.FromOptions(configuration);
@@ -40,8 +113,31 @@ namespace Avalab.Serilog.Sanitizer.Tests
 
             logger.Information($"Information with {pan} pan");
 
-            Assert.DoesNotContain("123", writer.ToString());
-            Assert.DoesNotContain("5677", writer.ToString());
+            Assert.DoesNotContain(pan, writer.ToString());
+        }
+
+        [Theory]
+        [InlineData("{cvv : 123}")]
+        public void WhenReadAllFormatersAndCheckCvvThenOk(string cvv)
+        {
+            var configuration = new ConfigurationBuilder()
+                                        .AddJsonFile("assets/WhenReadAllFormatersAndCheckCvvThenOk.json")
+                                    .Build();
+
+            SanitizerConfigurationStore.FromOptions(configuration);
+
+            var writer = new StringWriter();
+            var config = new LoggerConfiguration()
+                                .ReadFrom.Configuration(configuration)
+                                .WriteTo.Sanitizer(
+                                    s => s.Delegate(
+                                        lgEvent => _formatter.Format(lgEvent, writer)));
+
+            var logger = config.CreateLogger();
+
+            logger.Information($"Information with {cvv} pan");
+
+            Assert.DoesNotContain(cvv, writer.ToString());
         }
     }
 }

@@ -21,8 +21,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="assets\WhenReadAllFormatersThenOk.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="assets\WhenReadConfigurationFromJsonCorrectlyThenOk.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\sanitizer-general.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\WhenReadAllFormatersAndCheckCvvThenOk.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\WhenReadAllFormatersAndCheckPanThenOk.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

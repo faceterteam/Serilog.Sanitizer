@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 namespace Avalab.Serilog.Sanitizer
 {
@@ -6,11 +7,7 @@ namespace Avalab.Serilog.Sanitizer
     {
         public string Process(string content, IEnumerable<ISanitizingFormatRule> rules)
         {
-            string sanitizedContent = content;
-            foreach (var sanitizingFormatRule in rules)
-                sanitizedContent = sanitizingFormatRule.Sanitize(sanitizedContent);
-
-            return sanitizedContent;
+            return rules.Aggregate(content, (ct, rule) => rule.Sanitize(ct));
         }
     }
 }

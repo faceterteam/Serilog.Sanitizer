@@ -1,8 +1,6 @@
-﻿using System;
+﻿using System.Linq;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Serilog;
+
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Parsing;

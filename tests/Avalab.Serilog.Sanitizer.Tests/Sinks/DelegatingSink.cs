@@ -1,9 +1,7 @@
-﻿using Serilog.Core;
+﻿using System;
+
+using Serilog.Core;
 using Serilog.Events;
-using Serilog.Parsing;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Avalab.Serilog.Sanitizer.Tests.Sinks
 {

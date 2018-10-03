@@ -1,0 +1,44 @@
+{
+  "Serilog": {
+    "Using": [
+      "Avalab.Serilog.Sanitizer"
+    ],
+    "MinimumLevel": "Debug",
+    "Override": {
+      "Microsoft": "Information",
+      "System": "Warning"
+    },
+    "WriteTo": [
+      {
+        "Name": "Sanitizer",
+        "Args": {
+          "SanitizerSinkOptions": {
+            "Formatters": [
+              {
+                "Name": "PanUnreadableSanitizingFormatRule",
+                "Args": [ "[3456]\\d{3}[- ]?\\d{4}[- ]?\\d{4}[- ]?\\d{4}(?:[- ]?\\d{2})?", "*" ]
+              },
+              {
+                "Name": "CvvHiddenSanitizingFormatRule",
+                "Args": [ "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?", "*" ]
+              },
+              {
+                "Name": "CvvHiddenSanitizingFormatRule",
+                "Args": [ "(?i)cvv\"?[ ]?:[ ]?\"?\\d{4}\"?", "*" ]
+              }
+            ]
+          },
+          "sinks": [
+            {
+              "Name": "Debug",
+              "Args": {
+                "outputTemplate": "{Message} 322 {NewLine}{Exception}"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId", "WithProperty" ]
+  }
+}

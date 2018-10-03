@@ -1,9 +1,14 @@
 using Avalab.Serilog.Sanitizer.Tests.Sinks;
-using Microsoft.Extensions.Configuration;
+using Avalab.Serilog.Sanitizer.Extensions;
+
 using Serilog;
 using Serilog.Formatting;
 using Serilog.Formatting.Display;
+
 using System.IO;
+
+using Microsoft.Extensions.Configuration;
+
 using Xunit;
 
 namespace Avalab.Serilog.Sanitizer.Tests
@@ -31,7 +36,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
         public void WhenRealPanThenDoesNotContainPan(string pan)
         {
             var configuration = new ConfigurationBuilder()
-                            .AddJsonFile("assets/WhenReadAllFormatersThenOk.json")
+                            .AddJsonFile("assets/sanitizer-general.json")
                         .Build();
 
             SanitizerConfigurationStore.FromOptions(configuration);
@@ -54,7 +59,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
         public void WhenNotPanThenContainsNumber(string number)
         {
             var configuration = new ConfigurationBuilder()
-                            .AddJsonFile("assets/WhenReadAllFormatersThenOk.json")
+                            .AddJsonFile("assets/sanitizer-general.json")
                         .Build();
 
             SanitizerConfigurationStore.FromOptions(configuration);
@@ -88,7 +93,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
         public void WhenFoundCvvThenDoesNotContainCvv(string cvv)
         {
             var configuration = new ConfigurationBuilder()
-                            .AddJsonFile("assets/WhenReadAllFormatersThenOk.json")
+                            .AddJsonFile("assets/sanitizer-general.json")
                         .Build();
 
             SanitizerConfigurationStore.FromOptions(configuration);
