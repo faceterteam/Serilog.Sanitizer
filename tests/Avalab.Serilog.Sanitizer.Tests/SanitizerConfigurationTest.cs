@@ -63,7 +63,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
         public void WhenReadConfigurationFromJsonCorrectlyThenOk()
         {
             var configuration = new ConfigurationBuilder()
-                                        .AddJsonFile("assets/WhenReadConfigurationFromJsonCorrectlyThenOk.json")
+                                        .AddJsonFile("assets/WhenReadConfigurationFromJsonCorrectlyThenOk.json", false, true)
                                     .Build();
 
             SanitizerConfigurationStore.FromOptions(configuration);
