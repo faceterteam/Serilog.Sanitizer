@@ -20,8 +20,7 @@ Install-Package -Source "https://nuget.avalab.io/api/v2/" Avalab.Serilog.Sanitiz
 ```
 
 Т.к. библиотека является реализацией ```ILogEventSink```, то подключение осуществляется через 
-```LoggerConfiguration().WriteTo```
-
+```LoggerConfiguration().WriteTo``` :  
 ```csharp
 var logger = new LoggerConfiguration()
                  .WriteTo.Sanitizer(
