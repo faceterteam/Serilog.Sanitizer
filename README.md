@@ -1,4 +1,4 @@
-[![build status](https://gitlab.avalab.io/Shared/Avalab.Serilog.Sanitizer/commits/v0.1.1/build.svg)](https://gitlab.avalab.io/Shared/Avalab.Serilog.Sanitizer/commits/v0.1.1)
+# Avalab.Serilog.Sanitizer 
+[![build status](https://gitlab.avalab.io/Shared/Avalab.Serilog.Sanitizer/badges/master/build.svg)](https://gitlab.avalab.io/Shared/Avalab.Serilog.Sanitizer/tree/master)
 
-## Introduction
 
