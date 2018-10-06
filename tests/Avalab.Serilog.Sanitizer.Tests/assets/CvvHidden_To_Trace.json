@@ -17,7 +17,6 @@
             {
               "Name": "CvvHidden",
               "Args": {
-
                 "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
                 "replaceString": "*"
               }

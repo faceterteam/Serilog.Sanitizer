@@ -16,8 +16,8 @@ namespace Avalab.Serilog.Sanitizer
         /// <returns></returns>
         public static LoggerConfiguration RegexHidden(
             this LoggerSinkConfiguration loggerSinkConfiguration,
-            string regularExpression = "",
-            string replaceExpression = "",
+            string regularExpression,
+            string replaceExpression,
             string replaceString = "*")
         {
             if (string.IsNullOrEmpty(regularExpression))

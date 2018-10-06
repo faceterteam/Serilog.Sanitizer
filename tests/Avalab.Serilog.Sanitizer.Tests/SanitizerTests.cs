@@ -32,7 +32,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
             string resultMessage = string.Empty;
             var logger = new LoggerConfiguration()
                                  .WriteTo.Sanitizer(
-                                    s => s.PanUnreadable(),
+                                    r => r.PanUnreadable(),
                                     s => s.Delegate(evt => resultMessage = evt))
                             .CreateLogger();
 
@@ -54,7 +54,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
             string resultMessage = string.Empty;
             var logger = new LoggerConfiguration()
                                  .WriteTo.Sanitizer(
-                                    s => s.PanUnreadable(
+                                    r => r.PanUnreadable(
                                         regularExpression: @"[3456]\d{3}[- ]?\d{4}[- ]?\d{4}[- ]?\d{3,4}(?:[- ]?\d{2})?",
                                         endSkipCount: 3),
                                     s => s.Delegate(evt => resultMessage = evt))
@@ -85,7 +85,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
             string resultMessage = string.Empty;
             var logger = new LoggerConfiguration()
                                  .WriteTo.Sanitizer(
-                                    s => s.PanUnreadable(),
+                                    r => r.PanUnreadable(),
                                     s => s.Delegate(evt => resultMessage = evt))
                             .CreateLogger();
 
@@ -115,7 +115,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
             string resultMessage = string.Empty;
             var logger = new LoggerConfiguration()
                                 .WriteTo.Sanitizer(
-                                    s => s.CvvHidden(),
+                                    r => r.CvvHidden(),
                                     s => s.Delegate(evt => resultMessage = evt))
                             .CreateLogger();
 
@@ -145,7 +145,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
             string resultMessage = string.Empty;
             var logger = new LoggerConfiguration()
                                 .WriteTo.Sanitizer(
-                                    s => { s.PanUnreadable(); s.CvvHidden(); },
+                                    r => { r.PanUnreadable(); r.CvvHidden(); },
                                     s => s.Delegate(evt => resultMessage = evt))
                             .CreateLogger();
 
