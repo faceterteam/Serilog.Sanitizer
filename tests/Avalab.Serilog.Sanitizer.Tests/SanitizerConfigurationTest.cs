@@ -117,5 +117,38 @@ namespace Avalab.Serilog.Sanitizer.Tests
             Assert.Contains(maskedPan, _writer.ToString());
             Assert.DoesNotContain(cvv, _writer.ToString());
         }
+
+        [Theory]
+        [InlineData("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")]
+        public void CustomRule_Truncate50_To_Trace_longText(string text)
+        {
+            var configuration = new ConfigurationBuilder()
+                                        .AddJsonFile("assets/Truncate50_To_Trace.json")
+                                    .Build();
+            var config = new LoggerConfiguration()
+                                .ReadFrom.Configuration(configuration);
+            var logger = config.CreateLogger();
+
+            logger.Information(text);
+
+            Assert.DoesNotContain(text, _writer.ToString());
+            Assert.EndsWith("...\r\n", _writer.ToString());
+        }
+
+        [Theory]
+        [InlineData("short text")]
+        public void CustomRule_Truncate50_To_Trace_shortText(string text)
+        {
+            var configuration = new ConfigurationBuilder()
+                                        .AddJsonFile("assets/Truncate50_To_Trace.json")
+                                    .Build();
+            var config = new LoggerConfiguration()
+                                .ReadFrom.Configuration(configuration);
+            var logger = config.CreateLogger();
+
+            logger.Information(text);
+
+            Assert.Contains(text, _writer.ToString());
+        }
     }
 }

@@ -1,3 +1,4 @@
+using Avalab.Serilog.Sanitizer.Tests.Rules;
 using Avalab.Serilog.Sanitizer.Tests.Sinks;
 using Microsoft.Extensions.Configuration;
 using Serilog;
@@ -154,6 +155,62 @@ namespace Avalab.Serilog.Sanitizer.Tests
             Assert.DoesNotContain(pan, resultMessage.ToString());
             Assert.Contains(maskedPan, resultMessage.ToString());
             Assert.DoesNotContain(cvv, resultMessage.ToString());
+        }
+
+        [Theory]
+        [InlineData("127.0.0.1", "127.***.***.***")]
+        [InlineData("192.168.10.1", "192.***.***.***")]
+        [InlineData("255.255.255.255", "255.***.***.***")]
+        public void WhenSecretIpFoundThenDoesNotContainIp(string ip, string maskedIp)
+        {
+            string resultMessage = string.Empty;
+            var logger = new LoggerConfiguration()
+                                .WriteTo.Sanitizer(
+                                    r => { r.RegexHidden(
+                                        @"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)",
+                                        @"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+                                        "***.***.***");  },
+                                    s => s.Delegate(evt => resultMessage = evt))
+                            .CreateLogger();
+
+            logger.Information($"Information with {ip} secret ip");
+
+            Assert.DoesNotContain(ip, resultMessage.ToString());
+            Assert.Contains(maskedIp, resultMessage.ToString());
+            Assert.Equal($"Information with {maskedIp} secret ip", resultMessage);
+        }
+
+        [Theory]
+        [InlineData("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")]
+        public void CustomRule_WhenTextLongerThenTruncate(string text)
+        {
+            string resultMessage = string.Empty;
+            var logger = new LoggerConfiguration()
+                                .WriteTo.Sanitizer(
+                                    r => r.Truncate(50, "..."),
+                                    s => s.Delegate(evt => resultMessage = evt))
+                            .CreateLogger();
+
+            logger.Information(text);
+
+            Assert.DoesNotContain(text, resultMessage);
+            Assert.EndsWith("...", resultMessage);
+        }
+
+        [Theory]
+        [InlineData("short text")]
+        public void CustomRule_WhenTextShorterThenNotTruncate(string text)
+        {
+            string resultMessage = string.Empty;
+            var logger = new LoggerConfiguration()
+                                .WriteTo.Sanitizer(
+                                    r => r.Truncate(50, "..."),
+                                    s => s.Delegate(evt => resultMessage = evt))
+                            .CreateLogger();
+
+            logger.Information(text);
+
+            Assert.Contains(text, resultMessage);
         }
     }
 }
