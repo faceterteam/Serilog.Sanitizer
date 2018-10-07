@@ -132,7 +132,7 @@ namespace Avalab.Serilog.Sanitizer.Tests
             logger.Information(text);
 
             Assert.DoesNotContain(text, _writer.ToString());
-            Assert.EndsWith("...\r\n", _writer.ToString());
+            Assert.EndsWith("..." + Environment.NewLine, _writer.ToString());
         }
 
         [Theory]
