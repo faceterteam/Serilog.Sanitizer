@@ -41,7 +41,7 @@ namespace Serilog
                             && field.Name == "_sinks");
 
                         if (fieldsInfo == null)
-                            return null;
+                            throw new TargetException("Perhaps, Serilog should be version 2.5.0-2.7.1");
 
                         var unwrappedSinks = (ILogEventSink[])fieldsInfo.GetValue(wrappedRule);
 
