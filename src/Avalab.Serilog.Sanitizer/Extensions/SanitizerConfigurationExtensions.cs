@@ -30,7 +30,7 @@ namespace Serilog
             LoggerSinkConfiguration.Wrap(
                 loggerSinkConfiguration,
                 wrappedRule => {
-                    if (wrappedRule is AbstractSanitizingRule) // serilog 2.6.0
+                    if (wrappedRule is AbstractSanitizingRule) // serilog 2.5.0-2.6.0
                         sanitizeRules.Add((AbstractSanitizingRule)wrappedRule);
                     else // serilog 2.7.1
                     {
