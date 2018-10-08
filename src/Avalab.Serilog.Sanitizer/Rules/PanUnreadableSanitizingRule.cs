@@ -26,19 +26,6 @@ namespace Avalab.Serilog.Sanitizer.Rules
             _endReplaceIndex = endReplaceIndex;
         }
 
-        public override bool IsMatch(string matchedContent)
-        {
-            var match = _panUnreadableRegex.Match(matchedContent);
-            if (match.Success == false)
-                return false;
-
-            int count;
-            if (!Mod10Check(match.Value, out count))
-                return false;
-
-            return true;
-        }
-
         public override string Sanitize(string content)
         {
             return _panUnreadableRegex.Replace(content, match =>

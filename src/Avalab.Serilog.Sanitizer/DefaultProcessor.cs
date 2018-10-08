@@ -12,12 +12,15 @@ namespace Avalab.Serilog.Sanitizer
             _rules = rules;
         }
 
-        public string Process(string content, string matchedContent = null)
+        public string Sanitize(string content)
         {
-            return _rules.Aggregate(content, (ct, rule) => {
+            return _rules.Aggregate(content, (ct, rule) => rule.Sanitize(ct));
+        }
 
-                return rule.Sanitize(ct);
-            } );
+        public string Sanitize(string content, string key)
+        {
+            return _rules.Aggregate(content, (ct, rule) =>
+                rule.Sanitize($"{key}: {ct}").Substring($"{key}: ".Length));
         }
     }
 }

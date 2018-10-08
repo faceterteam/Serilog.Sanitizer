@@ -21,14 +21,10 @@ namespace Avalab.Serilog.Sanitizer.Rules
             _replaceExpression = replaceExpression;
         }
 
-        public override bool IsMatch(string matchedContent)
-        {
-            return _regex.IsMatch(matchedContent);
-        }
-
         public override string Sanitize(string content)
         {
-           return Regex.Replace(content, _replaceExpression, _ => _replaceString);
+            return _regex.Replace(content, match => 
+                Regex.Replace(match.Value, _replaceExpression, _ => _replaceString));
         }
     }
 }

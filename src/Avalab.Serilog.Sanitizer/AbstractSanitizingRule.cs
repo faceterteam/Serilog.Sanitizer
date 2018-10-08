@@ -8,8 +8,6 @@ namespace Avalab.Serilog.Sanitizer
     {
         public abstract string Sanitize(string content);
 
-        public abstract bool IsMatch(string matchedContent);
-
         public void Emit(LogEvent logEvent) { }
     }
 }

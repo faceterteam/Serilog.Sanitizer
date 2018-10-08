@@ -36,7 +36,7 @@ namespace Avalab.Serilog.Sanitizer
                 logEvent.Timestamp,
                 logEvent.Level,
                 _sanitizeException ? SanitizeException(logEvent.Exception) :logEvent.Exception,
-                parser.Parse(_processor.Process((logEvent.MessageTemplate.Text))),
+                parser.Parse(_processor.Sanitize((logEvent.MessageTemplate.Text))),
                 logEvent.Properties.Select(MapProperties));
 
             _sink.Emit(nle);
@@ -57,14 +57,7 @@ namespace Avalab.Serilog.Sanitizer
 
         private ScalarValue MapScalar(string key, ScalarValue value)
         {
-            using (TextWriter writer = new StringWriter())
-            {
-                value.Render(writer);
-
-                return new ScalarValue(_processor.Process(writer.ToString(), $"{key}: {writer.ToString()}"));
-
-                //return new ScalarValue(writer.ToString());
-            }
+            return new ScalarValue(_processor.Sanitize(value.Value.ToString(), key));
         }
 
         private StructureValue MapStructure(StructureValue value)
@@ -89,7 +82,7 @@ namespace Avalab.Serilog.Sanitizer
             if (ex.InnerException != null)
                 inner = SanitizeException(ex.InnerException);
 
-            return new Exception(_processor.Process(ex.Message), inner);
+            return new Exception(_processor.Sanitize(ex.Message), inner);
         }
     }
 }

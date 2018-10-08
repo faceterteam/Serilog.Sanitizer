@@ -2,6 +2,8 @@
 {
     interface ISanitizingProcessor
     {
-        string Process(string content, string matchedContent = null);
+        string Sanitize(string content);
+
+        string Sanitize(string content, string key);
     }
 }

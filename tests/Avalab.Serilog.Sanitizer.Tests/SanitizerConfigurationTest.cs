@@ -88,21 +88,21 @@ namespace Avalab.Serilog.Sanitizer.Tests
         }
 
         [Theory]
-        [InlineData("4024007111744339", "402400******4339", "123")]
-        [InlineData("4916337037292704", "491633******2704", 123)]
-        [InlineData("4916976299226965", "491697******6965", "123")]
-        [InlineData("4024007192667714", "402400******7714", 123)]
-        [InlineData("4024007133952274", "402400******2274", "123")]
-        [InlineData("5457563923156875", "545756******6875", 123)]
-        [InlineData("5486760586327273", "548676******7273", "123")]
-        [InlineData("5219957877355724", "521995******5724", 123)]
-        [InlineData("5523737085433088", "552373******3088", "123")]
-        [InlineData("5461458829025213", "546145******5213", 123)]
-        [InlineData("6011476719734606", "601147******4606", "123")]
-        [InlineData("6011988355763293", "601198******3293", 123)]
-        [InlineData("6011732295251781", "601173******1781", "123")]
-        [InlineData("6011117091981544", "601111******1544", 123)]
-        public void PanUnreadable_and_CvvHidden_To_Trace(string pan, string maskedPan, object cvv)
+        [InlineData("4024007111744339", "402400******4339", "{cvv\":\"123\"}")]
+        [InlineData("4916337037292704", "491633******2704", "{cvv\": \"123\"}")]
+        [InlineData("4916976299226965", "491697******6965", "{Cvv\":\"123\"}")]
+        [InlineData("4024007192667714", "402400******7714", "{Cvv\": \"123\"}")]
+        [InlineData("4024007133952274", "402400******2274", "{CVV\":\"123\"}")]
+        [InlineData("5457563923156875", "545756******6875", "{CVV\": \"123\"}")]
+        [InlineData("5486760586327273", "548676******7273", "{cvv\":123}")]
+        [InlineData("5219957877355724", "521995******5724", "{cvv\": 123}")]
+        [InlineData("5523737085433088", "552373******3088", "{Cvv\":123}")]
+        [InlineData("5461458829025213", "546145******5213", "{Cvv\": 123}")]
+        [InlineData("6011476719734606", "601147******4606", "{CVV\":123}")]
+        [InlineData("6011988355763293", "601198******3293", "{CVV: 123}")]
+        [InlineData("6011732295251781", "601173******1781", "{cvv :123}")]
+        [InlineData("6011117091981544", "601111******1544", "{cvv : 123}")]
+        public void PanUnreadable_and_CvvHidden_To_Trace(string pan, string maskedPan, string cvv)
         {
             var configuration = new ConfigurationBuilder()
                                         .AddJsonFile("assets/PanUnreadable_and_CvvHidden_To_Trace.json")
@@ -111,11 +111,11 @@ namespace Avalab.Serilog.Sanitizer.Tests
                                 .ReadFrom.Configuration(configuration);
             var logger = config.CreateLogger();
 
-            logger.Information($"Information with {pan} pan, cvv: {cvv}");
+            logger.Information($"Information with {pan} pan, and {cvv}");
 
             Assert.DoesNotContain(pan, _writer.ToString());
             Assert.Contains(maskedPan, _writer.ToString());
-            Assert.DoesNotContain("123", _writer.ToString());
+            Assert.DoesNotContain(cvv, _writer.ToString());
         }
 
         [Theory]
