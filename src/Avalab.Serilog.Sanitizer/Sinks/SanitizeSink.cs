@@ -3,6 +3,8 @@ using Serilog.Events;
 using Serilog.Parsing;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 
 namespace Avalab.Serilog.Sanitizer
@@ -18,6 +20,9 @@ namespace Avalab.Serilog.Sanitizer
             ILogEventSink sink,
             bool sanitizeException)
         {
+            if (sink == null)
+                throw new ArgumentNullException(nameof(sink));
+
             _processor = new DefaultProcessor(rules);
             _sink = sink;
             _sanitizeException = sanitizeException;
@@ -25,9 +30,6 @@ namespace Avalab.Serilog.Sanitizer
 
         public void Emit(LogEvent logEvent)
         {
-            if (_sink == null)
-                return;
-
             MessageTemplateParser parser = new MessageTemplateParser();
 
             var nle = new LogEvent(
@@ -35,18 +37,47 @@ namespace Avalab.Serilog.Sanitizer
                 logEvent.Level,
                 _sanitizeException ? SanitizeException(logEvent.Exception) :logEvent.Exception,
                 parser.Parse(_processor.Process((logEvent.MessageTemplate.Text))),
-                logEvent.Properties.Select(t => {
-                    if (t.Value is ScalarValue)
-                    {
-                        return new LogEventProperty(t.Key,
-                            new ScalarValue(_processor.Process(t.Value.ToString())));
-                    }
-                    else
-                        return new LogEventProperty(t.Key, t.Value);
-                        })
-                );
+                logEvent.Properties.Select(MapProperties));
 
             _sink.Emit(nle);
+        }
+
+        private LogEventProperty MapProperties(KeyValuePair<string, LogEventPropertyValue> tuple)
+        {
+            switch (tuple.Value)
+            {
+                case ScalarValue _:
+                    return new LogEventProperty(tuple.Key, MapScalar(tuple.Key, tuple.Value as ScalarValue));
+                case StructureValue _:
+                    return new LogEventProperty(tuple.Key, MapStructure(tuple.Value as StructureValue));
+                default:
+                    throw new InvalidEnumArgumentException($"type `{tuple.Value.GetType()}` not switched");
+            }
+        }
+
+        private ScalarValue MapScalar(string key, ScalarValue value)
+        {
+            using (TextWriter writer = new StringWriter())
+            {
+                value.Render(writer);
+
+                return new ScalarValue(_processor.Process(writer.ToString(), $"{key}: {writer.ToString()}"));
+
+                //return new ScalarValue(writer.ToString());
+            }
+        }
+
+        private StructureValue MapStructure(StructureValue value)
+        {
+            List<LogEventProperty> props = new List<LogEventProperty>();
+            foreach(var v in value.Properties)
+            {
+                if (v.Value is ScalarValue)
+                    props.Add(new LogEventProperty(v.Name, MapScalar(v.Name, v.Value as ScalarValue)));
+                if (v.Value is StructureValue)
+                    props.Add(new LogEventProperty(v.Name, MapStructure(v.Value as StructureValue)));
+            }
+            return new StructureValue(props);
         }
 
         private Exception SanitizeException(Exception ex)

@@ -160,7 +160,7 @@ var logger = new LoggerConfiguration()
 ### Добавление собственных правил санитарии
 
 Библиотека поддерживает добавление собственных правил модификации.  
-Для этого необходимо реализовать ```AbstractSanitizingRule``` и один единственный метод:  
+Для этого необходимо реализовать ```AbstractSanitizingRule``` и два метода:  
 
 ```csharp
 sealed class MyCustomSanitizingRule : AbstractSanitizingRule
@@ -172,7 +172,13 @@ sealed class MyCustomSanitizingRule : AbstractSanitizingRule
 
     public string Sanitize(string content)
     {
-        // ваша реализация
+        // если поиск и замена совпадает с входным параметром
+    }
+
+	public override string Sanitize(string content, string matchedContent)
+    {
+        // если поиск осуществлаем по параметру matchedContent  
+		// а замену делаем отталкиваясь от content
     }
 }
 ```

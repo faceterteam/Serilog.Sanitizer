@@ -16,6 +16,11 @@ namespace Avalab.Serilog.Sanitizer.Tests.Rules
             _endString = endString;
         }
 
+        public override bool IsMatch(string matchedContent)
+        {
+            return matchedContent.Length > _maxLength;
+        }
+
         public override string Sanitize(string content)
         {
             if (string.IsNullOrEmpty(content))

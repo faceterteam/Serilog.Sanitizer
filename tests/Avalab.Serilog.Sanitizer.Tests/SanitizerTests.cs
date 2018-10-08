@@ -1,7 +1,10 @@
+using Avalab.Serilog.Sanitizer.Tests.Enrichers;
 using Avalab.Serilog.Sanitizer.Tests.Rules;
 using Avalab.Serilog.Sanitizer.Tests.Sinks;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace Avalab.Serilog.Sanitizer.Tests
@@ -211,6 +214,26 @@ namespace Avalab.Serilog.Sanitizer.Tests
             logger.Information(text);
 
             Assert.Contains(text, resultMessage);
+        }
+
+        [Theory]
+        [InlineData("4024007111744339", "123")]
+        [InlineData("4916337037292704", 123)]
+        public void Properties_WhenRealPanThenDoesNotContainPan(string pan, object cvv)
+        {
+            string resultMessage = string.Empty;
+            var logger = new LoggerConfiguration()
+                            .Enrich.WithCustomObjectPan(pan, cvv) // 3 times contain Pan
+                                .WriteTo.Sanitizer(
+                                    r => { r.PanUnreadable(); r.CvvHidden(); },
+                                    s => s.Delegate(evt => resultMessage = evt,
+                                    "{CustomObjectPan} {Message}"))
+                            .CreateLogger();
+
+            logger.Information("Message with CustomObjectPan Enrichers");
+
+            Assert.DoesNotContain(pan, resultMessage);
+            Assert.DoesNotContain("123", resultMessage);
         }
     }
 }

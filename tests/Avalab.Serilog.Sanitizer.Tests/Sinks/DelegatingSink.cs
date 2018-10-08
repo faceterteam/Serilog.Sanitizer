@@ -12,7 +12,7 @@ namespace Avalab.Serilog.Sanitizer.Tests.Sinks
         private readonly Action<string> _message;
         private readonly ITextFormatter _formatter;
 
-        public DelegatingSink(Action<string> message, string messageTemplate = "{Message}")
+        public DelegatingSink(Action<string> message, string messageTemplate)
         {
             _message = message ?? throw new ArgumentNullException("loggingDelegate");
             _formatter = new MessageTemplateTextFormatter(messageTemplate, null);
