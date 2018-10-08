@@ -3,13 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <VersionPrefix>0.1.0</VersionPrefix>
-    <Authors>artur.tagirov;ivan.filatov</Authors>
+    <Authors>Ivan Filatov;Dmitriy Afonin;Artem Nenashev;Arthur Tagirov</Authors>
     <AssemblyName>Avalab.Serilog.Sanitizer</AssemblyName>
     <PackageId>Avalab.Serilog.Sanitizer</PackageId>
     <PackageTags>Avalab;Serilog;Sanitizer;Masked;Log</PackageTags>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
