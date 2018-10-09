@@ -1,16 +1,37 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 namespace Avalab.Serilog.Sanitizer
 {
-    public class DefaultProcessor : ISanitizingProcessor
+    class DefaultProcessor : ISanitizingProcessor
     {
-        public string Process(string content, IEnumerable<ISanitizingFormatRule> rules)
-        {
-            string sanitizedContent = content;
-            foreach (var sanitizingFormatRule in rules)
-                sanitizedContent = sanitizingFormatRule.Sanitize(sanitizedContent);
+        private readonly IEnumerable<AbstractSanitizingRule> _rules;
 
-            return sanitizedContent;
+        public DefaultProcessor(IEnumerable<AbstractSanitizingRule> rules)
+        {
+            _rules = rules;
+        }
+
+        /// <summary>
+        /// For LogEvent.Message, LogEvent.Exception
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public string Sanitize(string content)
+        {
+            return _rules.Aggregate(content, (ct, rule) => rule.Sanitize(ct));
+        }
+
+        /// <summary>
+        /// For LogEvent.Properties
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="key">Properties.Value.Key</param>
+        /// <returns></returns>
+        public string Sanitize(string content, string key)
+        {
+            return _rules.Aggregate(content, (ct, rule) =>
+                rule.Sanitize($"{key}: {ct}").Substring($"{key}: ".Length));
         }
     }
 }

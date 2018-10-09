@@ -1,0 +1,38 @@
+{
+  "Serilog": {
+    "Using": [
+      "Serilog.Sinks.Trace",
+      "Avalab.Serilog.Sanitizer.Tests"
+    ],
+    "MinimumLevel": "Debug",
+    "Override": {
+      "Microsoft": "Information",
+      "System": "Warning"
+    },
+    "WriteTo": [
+      {
+        "Name": "Sanitizer",
+        "Args": {
+          "rules": [
+            {
+              "Name": "Truncate",
+              "Args": {
+                "maxLength": "50",
+                "replaceString": "..."
+              }
+            }
+          ],
+          "sinks": [
+            {
+              "Name": "Trace",
+              "Args": {
+                "outputTemplate": "{Message}"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId", "WithProperty" ]
+  }
+}

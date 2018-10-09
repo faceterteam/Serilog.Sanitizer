@@ -1,0 +1,38 @@
+{
+  "Serilog": {
+    "Using": [
+      "Serilog.Sinks.Trace",
+      "Avalab.Serilog.Sanitizer"
+    ],
+    "MinimumLevel": "Debug",
+    "Override": {
+      "Microsoft": "Information",
+      "System": "Warning"
+    },
+    "WriteTo": [
+      {
+        "Name": "Sanitizer",
+        "Args": {
+          "rules": [
+            {
+              "Name": "CvvHidden",
+              "Args": {
+                "regularExpression": "(?i)cvv\"?[ ]?:[ ]?\"?\\d{3}\"?",
+                "replaceString": "*"
+              }
+            }
+          ],
+          "sinks": [
+            {
+              "Name": "Trace",
+              "Args": {
+                "outputTemplate": "{Message}"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "Enrich": [ "FromLogContext", "WithMachineName", "WithThreadId", "WithProperty" ]
+  }
+}
