@@ -1,11 +1,10 @@
-﻿using Serilog.Core;
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+
+using Serilog.Core;
 using Serilog.Events;
 using Serilog.Parsing;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
 
 namespace Avalab.Serilog.Sanitizer
 {
@@ -20,11 +19,8 @@ namespace Avalab.Serilog.Sanitizer
             ILogEventSink sink,
             bool sanitizeException)
         {
-            if (sink == null)
-                throw new ArgumentNullException(nameof(sink));
-
             _processor = new DefaultProcessor(rules);
-            _sink = sink;
+            _sink = sink ?? throw new ArgumentNullException(nameof(sink));
             _sanitizeException = sanitizeException;
         }
 
@@ -35,7 +31,7 @@ namespace Avalab.Serilog.Sanitizer
             var nle = new LogEvent(
                 logEvent.Timestamp,
                 logEvent.Level,
-                _sanitizeException ? SanitizeException(logEvent.Exception) :logEvent.Exception,
+                _sanitizeException ? SanitizeException(logEvent.Exception) : logEvent.Exception,
                 parser.Parse(_processor.Sanitize((logEvent.MessageTemplate.Text))),
                 logEvent.Properties.Select(MapProperties));
 
@@ -46,32 +42,21 @@ namespace Avalab.Serilog.Sanitizer
         {
             switch (tuple.Value)
             {
-                case ScalarValue _:
-                    return new LogEventProperty(tuple.Key, MapScalar(tuple.Key, tuple.Value as ScalarValue));
-                case StructureValue _:
-                    return new LogEventProperty(tuple.Key, MapStructure(tuple.Value as StructureValue));
+                case ScalarValue scalarValue:
+                    return new LogEventProperty(tuple.Key, MapScalar(tuple.Key, scalarValue));
+                case StructureValue structureValue:
+                    return new LogEventProperty(tuple.Key, MapStructure(structureValue));
                 default:
-                    throw new InvalidEnumArgumentException($"type `{tuple.Value.GetType()}` not switched");
+                    throw new InvalidOperationException($"Invalid type `{tuple.Value.GetType()}`");
             }
         }
 
-        private ScalarValue MapScalar(string key, ScalarValue value)
-        {
-            return new ScalarValue(_processor.Sanitize(value.Value.ToString(), key));
-        }
+        private ScalarValue MapScalar(string key, ScalarValue value) => new ScalarValue(_processor.Sanitize(value.Value.ToString(), key));
 
-        private StructureValue MapStructure(StructureValue value)
-        {
-            List<LogEventProperty> props = new List<LogEventProperty>();
-            foreach(var v in value.Properties)
-            {
-                if (v.Value is ScalarValue)
-                    props.Add(new LogEventProperty(v.Name, MapScalar(v.Name, v.Value as ScalarValue)));
-                if (v.Value is StructureValue)
-                    props.Add(new LogEventProperty(v.Name, MapStructure(v.Value as StructureValue)));
-            }
-            return new StructureValue(props);
-        }
+        private StructureValue MapStructure(StructureValue value) => new StructureValue(
+                value.Properties.Select(
+                    property => MapProperties(
+                    new KeyValuePair<string, LogEventPropertyValue>(property.Name, property.Value))));
 
         private Exception SanitizeException(Exception ex)
         {

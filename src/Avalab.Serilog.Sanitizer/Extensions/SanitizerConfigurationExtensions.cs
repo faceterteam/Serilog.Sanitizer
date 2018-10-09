@@ -35,21 +35,18 @@ namespace Serilog
                     else // serilog 2.7.1
                     {
                         var fieldsInfo = wrappedRule
-                        .GetType()
-                        .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
-                        .FirstOrDefault(field => typeof(ILogEventSink[]).IsAssignableFrom(field.FieldType)
-                            && field.Name == "_sinks");
+                            .GetType()
+                            .GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                        .FirstOrDefault(field => typeof(ILogEventSink[]).IsAssignableFrom(field.FieldType) && field.Name == "_sinks");
 
                         if (fieldsInfo == null)
-                            throw new TargetException("Perhaps, Serilog should be version 2.5.0-2.7.1");
+                            throw new TargetException("Cannot find the _sinks field from the SafeAggregateSink class.");
 
                         var unwrappedSinks = (ILogEventSink[])fieldsInfo.GetValue(wrappedRule);
 
                         foreach (var sink in unwrappedSinks)
-                        {
                             if (sink is AbstractSanitizingRule)
                                 sanitizeRules.Add((AbstractSanitizingRule)sink);
-                        }
                     }
 
                     return default(ILogEventSink);
