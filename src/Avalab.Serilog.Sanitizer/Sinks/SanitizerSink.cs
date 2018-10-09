@@ -9,13 +9,13 @@ using System.Linq;
 
 namespace Avalab.Serilog.Sanitizer
 {
-    sealed class SanitizeSink : ILogEventSink
+    sealed class SanitizerSink : ILogEventSink
     {
         private readonly ILogEventSink _sink;
         private readonly ISanitizingProcessor _processor;
         private readonly bool _sanitizeException;
 
-        public SanitizeSink(
+        public SanitizerSink(
             IEnumerable<AbstractSanitizingRule> rules, 
             ILogEventSink sink,
             bool sanitizeException)

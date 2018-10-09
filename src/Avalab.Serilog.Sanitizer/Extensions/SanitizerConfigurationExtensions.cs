@@ -58,7 +58,7 @@ namespace Serilog
 
             return LoggerSinkConfiguration.Wrap(
                 loggerSinkConfiguration,
-                wrappedSink => new SanitizeSink(sanitizeRules, wrappedSink, sanitizeException),
+                wrappedSink => new SanitizerSink(sanitizeRules, wrappedSink, sanitizeException),
                 sinks);
         }
     }
