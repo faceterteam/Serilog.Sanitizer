@@ -1,24 +1,28 @@
-﻿using Serilog.Core;
+﻿using System;
+using System.IO;
+using Serilog.Core;
 using Serilog.Events;
-using Serilog.Parsing;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Serilog.Formatting;
+using Serilog.Formatting.Display;
 
 namespace Avalab.Serilog.Sanitizer.Tests.Sinks
 {
-    public class DelegatingSink : ILogEventSink
+    class DelegatingSink : ILogEventSink
     {
-        private readonly Action<LogEvent> _loggingDelegate;
+        private readonly Action<string> _message;
+        private readonly ITextFormatter _formatter;
 
-        public DelegatingSink(Action<LogEvent> loggingDelegate)
+        public DelegatingSink(Action<string> message, string messageTemplate)
         {
-            _loggingDelegate = loggingDelegate ?? throw new ArgumentNullException("loggingDelegate");
+            _message = message ?? throw new ArgumentNullException("loggingDelegate");
+            _formatter = new MessageTemplateTextFormatter(messageTemplate, null);
         }
 
         public void Emit(LogEvent logEvent)
         {
-            _loggingDelegate(logEvent);
+            TextWriter writer = new StringWriter();
+            _formatter.Format(logEvent, writer);
+            _message(writer.ToString());
         }
     }
 }

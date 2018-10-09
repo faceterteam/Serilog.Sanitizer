@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Avalab.Serilog.Sanitizer
+﻿namespace Avalab.Serilog.Sanitizer
 {
-    public interface ISanitizingProcessor
+    interface ISanitizingProcessor
     {
-        string Process(string content, IEnumerable<ISanitizingFormatRule> rules);
+        string Sanitize(string content);
+
+        string Sanitize(string content, string key);
     }
 }
