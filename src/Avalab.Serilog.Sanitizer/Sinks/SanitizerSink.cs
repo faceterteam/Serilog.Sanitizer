@@ -51,7 +51,13 @@ namespace Avalab.Serilog.Sanitizer
             }
         }
 
-        private ScalarValue MapScalar(string key, ScalarValue value) => new ScalarValue(_processor.Sanitize(value.Value.ToString(), key));
+        private ScalarValue MapScalar(string key, ScalarValue value)
+        {
+            if (value?.Value == null)
+                return new ScalarValue(value);
+             
+            return new ScalarValue(_processor.Sanitize(value.Value.ToString(), key));
+        }
 
         private StructureValue MapStructure(StructureValue value) => new StructureValue(
                 value.Properties.Select(
