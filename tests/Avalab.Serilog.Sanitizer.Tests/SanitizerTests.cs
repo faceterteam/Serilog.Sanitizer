@@ -235,5 +235,30 @@ namespace Avalab.Serilog.Sanitizer.Tests
             Assert.DoesNotContain(pan, resultMessage);
             Assert.DoesNotContain("123", resultMessage);
         }
+
+        [Theory]
+        [InlineData("{ \"password\": \"1dsf23adf456\" }", "{ \"password\": \"***\" }")]
+        [InlineData("{ \"password\":\"1dsf23adf456\" }", "{ \"password\": \"***\" }")]
+        [InlineData("{ \"Password\": \"1dsf23adf456\" }", "{ \"Password\": \"***\" }")]
+        [InlineData("{ \"Password\":\"1dsf23adf456\" }", "{ \"Password\": \"***\" }")]
+        public void WhenPasswordThenDoesNotContain(string json, string maskedJson)
+        {
+            string resultMessage = string.Empty;
+            var logger = new LoggerConfiguration()
+                                .WriteTo.Sanitizer(
+                                    r => {
+                                        r.RegexHidden(
+                                     "(?i)\"password\":\\s?\".+\"",
+                                     ":\\s?\".+\"",
+                                     ": \"***\"");
+                                    },
+                                    s => s.Delegate(evt => resultMessage = evt))
+                            .CreateLogger();
+
+            logger.Information(json);
+
+            Assert.DoesNotContain("1dsf23adf456", resultMessage.ToString());
+            Assert.Equal(maskedJson, resultMessage);
+        }
     }
 }
