@@ -46,6 +46,12 @@ namespace Avalab.Serilog.Sanitizer
                     return new LogEventProperty(tuple.Key, MapScalar(tuple.Key, scalarValue));
                 case StructureValue structureValue:
                     return new LogEventProperty(tuple.Key, MapStructure(structureValue));
+                case SequenceValue sequenceValue:
+                    return new LogEventProperty(tuple.Key,
+                        new SequenceValue(
+                            sequenceValue.Elements.Select(element => 
+                                new ScalarValue(_processor.Sanitize((element as ScalarValue)?.Value?.ToString() ??
+                                "")))));
                 default:
                     throw new InvalidOperationException($"Invalid type `{tuple.Value.GetType()}`");
             }
