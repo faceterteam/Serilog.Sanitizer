@@ -23,8 +23,9 @@ namespace Avalab.Serilog.Sanitizer.Rules
 
         public override string Sanitize(string content)
         {
-            return _regex.Replace(content, match => 
+            var s = _regex.Replace(content, match => 
                 Regex.Replace(match.Value, _replaceExpression, _ => _replaceString));
+            return s;
         }
     }
 }
