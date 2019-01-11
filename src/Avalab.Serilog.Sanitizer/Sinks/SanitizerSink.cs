@@ -15,7 +15,7 @@ namespace Avalab.Serilog.Sanitizer
         private readonly bool _sanitizeException;
 
         public SanitizerSink(
-            IEnumerable<AbstractSanitizingRule> rules, 
+            IEnumerable<AbstractSanitizingRule> rules,
             ILogEventSink sink,
             bool sanitizeException)
         {
@@ -43,19 +43,52 @@ namespace Avalab.Serilog.Sanitizer
             switch (tuple.Value)
             {
                 case ScalarValue scalarValue:
-                    return new LogEventProperty(tuple.Key, MapScalar(tuple.Key, scalarValue));
+                    return new LogEventProperty(tuple.Key, MapValue(scalarValue, tuple.Key));
                 case StructureValue structureValue:
-                    return new LogEventProperty(tuple.Key, MapStructure(structureValue));
+                case SequenceValue sequenceValue:
+                case DictionaryValue dictionaryValue:
                 default:
-                    throw new InvalidOperationException($"Invalid type `{tuple.Value.GetType()}`");
+                    return new LogEventProperty(tuple.Key, MapValue(tuple.Value));
             }
         }
+
+        private LogEventPropertyValue MapValue(LogEventPropertyValue value, string key = "")
+        {
+            switch (value)
+            {
+                case ScalarValue scalarValue:
+                    return new ScalarValue(_processor.Sanitize(value.ToString(), key));
+                case StructureValue structureValue:
+                    return MapStructure(structureValue);
+                case SequenceValue sequenceValue:
+                    return MapSequence(sequenceValue);
+                case DictionaryValue dictionaryValue:
+                    return MapDictionary(dictionaryValue);
+                default:
+                    return new ScalarValue(
+                        new InvalidOperationException($"Invalid type `{value.GetType()}`"));
+            }
+        }
+
+        private DictionaryValue MapDictionary(DictionaryValue dictionaryValue) =>
+            new DictionaryValue(
+                dictionaryValue.Elements.Select(
+                    property =>
+                       new KeyValuePair<ScalarValue, LogEventPropertyValue>(property.Key, MapValue(property.Value))
+                    ));
+
+        private SequenceValue MapSequence(SequenceValue sequenceValue) =>
+            new SequenceValue(
+                sequenceValue.Elements.Select(
+                    property => 
+                        MapValue(property)
+                    ));
 
         private ScalarValue MapScalar(string key, ScalarValue value)
         {
             if (value?.Value == null)
                 return new ScalarValue(value);
-             
+
             return new ScalarValue(_processor.Sanitize(value.Value.ToString(), key));
         }
 
